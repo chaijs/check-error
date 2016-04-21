@@ -75,7 +75,7 @@
 
 ## What is Check-Error?
 
-Check-Error is a module which you can use retrive an Error's information such as its `message` or `constructor` name and also to check wheter two Errors are compatible based on their messages, constructors or even instances.
+Check-Error is a module which you can use to retrieve an Error's information such as its `message` or `constructor` name and also to check whether two Errors are compatible based on their messages, constructors or even instances.
 
 ## Installation
 
@@ -97,10 +97,10 @@ You can also use it within the browser; install via npm and use the `check-error
 
 The primary export of `check-error` is an object which has the following methods:
 
-* `compatibleInstance(err, errorLike)` - Checks if an error is compatible with another `errorLike` object. If `errorLike` is an error instance we do a strict comparison, otherwise we return `true` by default.
+* `compatibleInstance(err, errorLike)` - Checks if an error is compatible with another `errorLike` object. If `errorLike` is an error instance we do a strict comparison, otherwise we return `false` by default, because instances of objects can only be compatible if they're both error instances.
 * `compatibleConstructor(err, errorLike)` - Checks if an error's constructor is compatible with another `errorLike` object. If `err` has the same constructor as `errorLike` or if `err` is an instance of `errorLike`.
 * `compatibleMessage(err, errMatcher)` - Checks if an error message is compatible with an `errMatcher` RegExp or String (we check if the message contains the String).
-* `getConstructorName(errorLike)` - Retrieves the name of a constructor, an error's constructor or `err` itself if it's not an error instance or constructor.
+* `getConstructorName(errorLike)` - Retrieves the name of a constructor, an error's constructor or `errorLike` itself if it's not an error instance or constructor.
 * `getMessage(err)` - Retrieves the message of an error or `err` itself if it's a String. If `err` or `err.message` is undefined we return an empty String.
 
 ```js
@@ -140,8 +140,6 @@ try {
 } catch(e) {
   caughtErr = e;
 }
-
-var sameInstance = caughtErr;
 
 checkError.compatibleConstructor(caughtErr, Error); // true
 checkError.compatibleConstructor(caughtErr, TypeError); // true
