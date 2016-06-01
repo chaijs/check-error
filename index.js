@@ -86,6 +86,34 @@ function compatibleMessage(thrown, errMatcher) {
 }
 
 /**
+ * ### .getFunctionName(constructorFn)
+ *
+ * Returns the name of a function.
+ * This also includes a polyfill function if `constructorFn.name` is not defined.
+ *
+ * @name getFunctionName
+ * @param {Function} constructorFn
+ * @namespace Utils
+ * @api private
+ */
+
+var functionNameMatch = /\s*function(?:\s|\s*\/\*[^(?:*\/)]+\*\/\s*)*([^\(\/]+)/;
+function getFunctionName(constructorFn) {
+  var name = '';
+  if (typeof constructorFn.name === 'undefined') {
+    // Here we run a polyfill if constructorFn.name is not defined
+    var match = String(constructorFn).match(functionNameMatch);
+    if (match) {
+      name = match[1];
+    }
+  } else {
+    name = constructorFn.name;
+  }
+
+  return name;
+}
+
+/**
  * ### .getConstructorName(errorLike)
  *
  * Gets the constructor name for an Error instance or constructor itself.
@@ -99,10 +127,10 @@ function compatibleMessage(thrown, errMatcher) {
 function getConstructorName(errorLike) {
   var constructorName = errorLike;
   if (errorLike instanceof Error) {
-    constructorName = errorLike.constructor.name;
+    constructorName = getFunctionName(errorLike.constructor);
   } else if (typeof errorLike === 'function') {
     // if `err` is not an instance of Error it is an error constructor itself
-    constructorName = new errorLike().name; // eslint-disable-line new-cap
+    constructorName = getFunctionName(errorLike);
   }
 
   return constructorName;
