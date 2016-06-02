@@ -75,6 +75,18 @@ describe('checkError', function () {
 
     assert(checkError.getConstructorName(null) === null);
     assert(checkError.getConstructorName(undefined) === undefined);
+
+    // Asserting that `getFunctionName` behaves correctly
+    function /*one*/correctName/*two*/() { // eslint-disable-line no-inline-comments, spaced-comment
+      return 0;
+    }
+
+    function withoutComments() {
+      return 1;
+    }
+
+    assert(checkError.getConstructorName(correctName) === 'correctName');
+    assert(checkError.getConstructorName(withoutComments) === 'withoutComments');
   });
 
   it('getMessage', function () {
