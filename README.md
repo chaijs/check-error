@@ -5,7 +5,7 @@
 </h1>
 
 <p align=center>
-  Error comparison and information related utility for [node](http://nodejs.org) and the browser.
+  Error comparison and information related utility for <a href="http://nodejs.org">node</a> and the browser.
 </p>
 
 <p align=center>
@@ -104,13 +104,13 @@ The primary export of `check-error` is an object which has the following methods
 * `getMessage(err)` - Retrieves the message of an error or `err` itself if it's a String. If `err` or `err.message` is undefined we return an empty String.
 
 ```js
-var checkError = require('checkError');
+var checkError = require('check-error');
 ```
 
 #### .compatibleInstance(err, errorLike)
 
 ```js
-var checkError = require('checkError');
+var checkError = require('check-error');
 
 var funcThatThrows = function() { throw new TypeError('I am a TypeError') };
 var caughtErr;
@@ -130,7 +130,7 @@ checkError.compatibleInstance(caughtErr, new TypeError('Another error')); // fal
 #### .compatibleConstructor(err, errorLike)
 
 ```js
-var checkError = require('checkError');
+var checkError = require('check-error');
 
 var funcThatThrows = function() { throw new TypeError('I am a TypeError') };
 var caughtErr;
@@ -149,7 +149,7 @@ checkError.compatibleConstructor(caughtErr, RangeError); // false
 #### .compatibleMessage(err, errMatcher)
 
 ```js
-var checkError = require('checkError');
+var checkError = require('check-error');
 
 var funcThatThrows = function() { throw new TypeError('I am a TypeError') };
 var caughtErr;
@@ -171,7 +171,7 @@ checkError.compatibleMessage(caughtErr, 'I do not exist'); // false
 #### .getConstructorName(errorLike)
 
 ```js
-var checkError = require('checkError');
+var checkError = require('check-error');
 
 var funcThatThrows = function() { throw new TypeError('I am a TypeError') };
 var caughtErr;
@@ -190,7 +190,7 @@ checkError.getConstructorName(caughtErr) // 'TypeError'
 #### .getMessage(err)
 
 ```js
-var checkError = require('checkError');
+var checkError = require('check-error');
 
 var funcThatThrows = function() { throw new TypeError('I am a TypeError') };
 var caughtErr;
