@@ -85,9 +85,11 @@ describe('checkError', function () {
       return 1;
     }
 
-    var anonymousFunc = function () { // eslint-disable-line func-style
-      return 2;
-    };
+    var anonymousFunc = (function () {
+      return function () { // eslint-disable-line func-style
+        return 2;
+      };
+    }());
 
     // See chaijs/chai/issues/45: some poorly-constructed custom errors don't have useful names
     // on either their constructor or their constructor prototype, but instead
