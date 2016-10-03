@@ -97,16 +97,18 @@ function compatibleMessage(thrown, errMatcher) {
  * @api private
  */
 
-var functionNameMatch = /\s*function(?:\s|\s*\/\*[^(?:*\/)]+\*\/\s*)*([^\(\/]+)/;
+var toString = Function.prototype.toString;
+var functionNameMatch = /\s*function(?:\s|\s*\/\*[^(?:*\/)]+\*\/\s*)*([^\s\(\/]+)/;
 function getFunctionName(constructorFn) {
   var name = '';
-  if (typeof constructorFn.name === 'undefined') {
-    // Here we run a polyfill if constructorFn.name is not defined
-    var match = String(constructorFn).match(functionNameMatch);
+  if (typeof Function.prototype.name === 'undefined' && typeof constructorFn.name === 'undefined') {
+    // Here we run a polyfill if Function does not support the `name` property and if constructorFn.name is not defined
+    var match = toString.call(constructorFn).match(functionNameMatch);
     if (match) {
       name = match[1];
     }
   } else {
+    // If we've got a `name` property we just use it
     name = constructorFn.name;
   }
 
@@ -132,8 +134,11 @@ function getConstructorName(errorLike) {
     // If `err` is not an instance of Error it is an error constructor itself or another function.
     // If we've got a common function we get its name, otherwise we may need to create a new instance
     // of the error just in case it's a poorly-constructed error. Please see chaijs/chai/issues/45 to know more.
-    constructorName = getFunctionName(errorLike).trim() ||
-        getFunctionName(new errorLike()); // eslint-disable-line new-cap
+    constructorName = getFunctionName(errorLike);
+    if (constructorName === '') {
+      var newConstructorName = getFunctionName(new errorLike()); // eslint-disable-line new-cap
+      constructorName = newConstructorName ? newConstructorName : constructorName;
+    }
   }
 
   return constructorName;
