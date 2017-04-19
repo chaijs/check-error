@@ -21,7 +21,7 @@
   "main": "./index.js",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/chaijs/check-error.git"
+    "url": "git@github.com:chaijs/check-error.git"
   },
   "scripts": {
     "build": "browserify --bare $npm_package_main --standalone checkError -o check-error.js",
