@@ -16,34 +16,6 @@ var getFunctionName = require('get-func-name');
  */
 
 /**
- * ### .compatibleConstructor(thrown, errorLike)
- *
- * Checks if two constructors are compatible.
- * This function can receive either an error constructor or
- * an error instance as the `errorLike` argument.
- * Constructors are compatible if they're the same or if one is
- * an instance of another.
- *
- * @name compatibleConstructor
- * @param {Error} thrown error
- * @param {Error|ErrorConstructor} errorLike object to compare against
- * @namespace Utils
- * @api public
- */
-
-function compatibleConstructor(thrown, errorLike) {
-  if (errorLike instanceof Error) {
-    // If `errorLike` is an instance of any error we compare their constructors
-    return thrown.constructor === errorLike.constructor || thrown instanceof errorLike.constructor;
-  } else if (errorLike.prototype instanceof Error || errorLike === Error) {
-    // If `errorLike` is a constructor that inherits from Error, we compare `thrown` to `errorLike` directly
-    return thrown.constructor === errorLike || thrown instanceof errorLike;
-  }
-
-  return false;
-}
-
-/**
  * ### .getMessage(errorLike)
  *
  * Gets the error message from an error.
@@ -118,7 +90,6 @@ function getConstructorName(errorLike) {
 }
 
 module.exports = {
-  compatibleConstructor: compatibleConstructor,
   compatibleMessage: compatibleMessage,
   getMessage: getMessage,
   getConstructorName: getConstructorName,

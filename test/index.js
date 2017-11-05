@@ -2,26 +2,6 @@
 var assert = require('simple-assert');
 var checkError = require('..');
 describe('checkError', function () {
-  it('compatibleConstructor', function () {
-    var errorInstance = new Error('I am an instance');
-    var sameInstance = errorInstance;
-    var otherInstance = new Error('I an another instance');
-    var derivedInstance = new TypeError('I inherit from Error');
-    var anObject = {};
-    var aNumber = 1337;
-    assert(checkError.compatibleConstructor(errorInstance, sameInstance) === true);
-    assert(checkError.compatibleConstructor(errorInstance, otherInstance) === true);
-    assert(checkError.compatibleConstructor(derivedInstance, errorInstance) === true);
-    assert(checkError.compatibleConstructor(errorInstance, derivedInstance) === false);
-
-    assert(checkError.compatibleConstructor(errorInstance, Error) === true);
-    assert(checkError.compatibleConstructor(derivedInstance, TypeError) === true);
-    assert(checkError.compatibleConstructor(errorInstance, TypeError) === false);
-
-    assert(checkError.compatibleConstructor(errorInstance, anObject) === false);
-    assert(checkError.compatibleConstructor(errorInstance, aNumber) === false);
-  });
-
   it('compatibleMessage', function () {
     var errorInstance = new Error('I am an instance');
     var derivedInstance = new TypeError('I inherit from Error');
