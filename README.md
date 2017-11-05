@@ -97,7 +97,6 @@ You can also use it within the browser; install via npm and use the `check-error
 
 The primary export of `check-error` is an object which has the following methods:
 
-* `compatibleInstance(err, errorLike)` - Checks if an error is compatible with another `errorLike` object. If `errorLike` is an error instance we do a strict comparison, otherwise we return `false` by default, because instances of objects can only be compatible if they're both error instances.
 * `compatibleConstructor(err, errorLike)` - Checks if an error's constructor is compatible with another `errorLike` object. If `err` has the same constructor as `errorLike` or if `err` is an instance of `errorLike`.
 * `compatibleMessage(err, errMatcher)` - Checks if an error message is compatible with an `errMatcher` RegExp or String (we check if the message contains the String).
 * `getConstructorName(errorLike)` - Retrieves the name of a constructor, an error's constructor or `errorLike` itself if it's not an error instance or constructor.
@@ -105,26 +104,6 @@ The primary export of `check-error` is an object which has the following methods
 
 ```js
 var checkError = require('check-error');
-```
-
-#### .compatibleInstance(err, errorLike)
-
-```js
-var checkError = require('check-error');
-
-var funcThatThrows = function() { throw new TypeError('I am a TypeError') };
-var caughtErr;
-
-try {
-  funcThatThrows();
-} catch(e) {
-  caughtErr = e;
-}
-
-var sameInstance = caughtErr;
-
-checkError.compatibleInstance(caughtErr, sameInstance); // true
-checkError.compatibleInstance(caughtErr, new TypeError('Another error')); // false
 ```
 
 #### .compatibleConstructor(err, errorLike)

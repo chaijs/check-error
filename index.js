@@ -16,24 +16,6 @@ var getFunctionName = require('get-func-name');
  */
 
 /**
- * ### .compatibleInstance(thrown, errorLike)
- *
- * Checks if two instances are compatible (strict equal).
- * Returns false if errorLike is not an instance of Error, because instances
- * can only be compatible if they're both error instances.
- *
- * @name compatibleInstance
- * @param {Error} thrown error
- * @param {Error|ErrorConstructor} errorLike object to compare against
- * @namespace Utils
- * @api public
- */
-
-function compatibleInstance(thrown, errorLike) {
-  return errorLike instanceof Error && thrown === errorLike;
-}
-
-/**
  * ### .compatibleConstructor(thrown, errorLike)
  *
  * Checks if two constructors are compatible.
@@ -140,7 +122,6 @@ function getMessage(errorLike) {
 }
 
 module.exports = {
-  compatibleInstance: compatibleInstance,
   compatibleConstructor: compatibleConstructor,
   compatibleMessage: compatibleMessage,
   getMessage: getMessage,

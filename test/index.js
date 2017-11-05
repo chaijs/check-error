@@ -2,17 +2,6 @@
 var assert = require('simple-assert');
 var checkError = require('..');
 describe('checkError', function () {
-  it('compatibleInstance', function () {
-    var errorInstance = new Error('I am an instance');
-    var sameInstance = errorInstance;
-    var otherInstance = new Error('I an another instance');
-    var aNumber = 1337;
-    assert(checkError.compatibleInstance(errorInstance, sameInstance) === true);
-    assert(checkError.compatibleInstance(errorInstance, otherInstance) === false);
-    assert(checkError.compatibleInstance(errorInstance, Error) === false);
-    assert(checkError.compatibleInstance(errorInstance, aNumber) === false);
-  });
-
   it('compatibleConstructor', function () {
     var errorInstance = new Error('I am an instance');
     var sameInstance = errorInstance;
