@@ -100,7 +100,7 @@ The primary export of `check-error` is an object which has the following methods
 * `compatibleConstructor(err, errorLike)` - Checks if an error's constructor is compatible with another `errorLike` object. If `err` has the same constructor as `errorLike` or if `err` is an instance of `errorLike`.
 * `compatibleMessage(err, errMatcher)` - Checks if an error message is compatible with an `errMatcher` RegExp or String (we check if the message contains the String).
 * `getConstructorName(errorLike)` - Retrieves the name of a constructor, an error's constructor or `errorLike` itself if it's not an error instance or constructor.
-* `getMessage(err)` - Retrieves the message of an error or `err` itself if it's a String. If `err` or `err.message` is undefined we return an empty String.
+* `getMessage(err)` - Retrieves the message of an error. If `err` or `err.message` is undefined we return an empty String.
 
 ```js
 var checkError = require('check-error');

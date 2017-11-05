@@ -44,6 +44,26 @@ function compatibleConstructor(thrown, errorLike) {
 }
 
 /**
+ * ### .getMessage(errorLike)
+ *
+ * Gets the error message from an error.
+ * If the error has no message, we return an empty string.
+ *
+ * @name getMessage
+ * @param {Error|String} errorLike
+ * @namespace Utils
+ * @api public
+ */
+
+function getMessage(errorLike) {
+  if (errorLike && errorLike.message) {
+    return errorLike.message;
+  }
+
+  return '';
+}
+
+/**
  * ### .compatibleMessage(thrown, errMatcher)
  *
  * Checks if an error's message is compatible with a matcher (String or RegExp).
@@ -58,7 +78,7 @@ function compatibleConstructor(thrown, errorLike) {
  */
 
 function compatibleMessage(thrown, errMatcher) {
-  var comparisonString = typeof thrown === 'string' ? thrown : thrown.message;
+  var comparisonString = getMessage(thrown);
   if (errMatcher instanceof RegExp) {
     return errMatcher.test(comparisonString);
   } else if (typeof errMatcher === 'string') {
@@ -95,30 +115,6 @@ function getConstructorName(errorLike) {
   }
 
   return constructorName;
-}
-
-/**
- * ### .getMessage(errorLike)
- *
- * Gets the error message from an error.
- * If `err` is a String itself, we return it.
- * If the error has no message, we return an empty string.
- *
- * @name getMessage
- * @param {Error|String} errorLike
- * @namespace Utils
- * @api public
- */
-
-function getMessage(errorLike) {
-  var msg = '';
-  if (errorLike && errorLike.message) {
-    msg = errorLike.message;
-  } else if (typeof errorLike === 'string') {
-    msg = errorLike;
-  }
-
-  return msg;
 }
 
 module.exports = {

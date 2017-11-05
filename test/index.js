@@ -25,7 +25,6 @@ describe('checkError', function () {
   it('compatibleMessage', function () {
     var errorInstance = new Error('I am an instance');
     var derivedInstance = new TypeError('I inherit from Error');
-    var thrownMessage = 'Imagine I have been thrown';
     assert(checkError.compatibleMessage(errorInstance, /instance$/) === true);
     assert(checkError.compatibleMessage(derivedInstance, /Error$/) === true);
     assert(checkError.compatibleMessage(errorInstance, /unicorn$/) === false);
@@ -35,19 +34,6 @@ describe('checkError', function () {
     assert(checkError.compatibleMessage(derivedInstance, 'Error') === true);
     assert(checkError.compatibleMessage(errorInstance, 'unicorn') === false);
     assert(checkError.compatibleMessage(derivedInstance, 'dinosaur') === false);
-
-    assert(checkError.compatibleMessage(thrownMessage, /thrown$/) === true);
-    assert(checkError.compatibleMessage(thrownMessage, /^Imagine/) === true);
-    assert(checkError.compatibleMessage(thrownMessage, /unicorn$/) === false);
-    assert(checkError.compatibleMessage(thrownMessage, /dinosaur$/) === false);
-
-    assert(checkError.compatibleMessage(thrownMessage, 'Imagine') === true);
-    assert(checkError.compatibleMessage(thrownMessage, 'thrown') === true);
-    assert(checkError.compatibleMessage(thrownMessage, 'unicorn') === false);
-    assert(checkError.compatibleMessage(thrownMessage, 'dinosaur') === false);
-
-    assert(checkError.compatibleMessage(thrownMessage, undefined) === false);
-    assert(checkError.compatibleMessage(thrownMessage, null) === false);
   });
 
   it('constructorName', function () {
@@ -97,13 +83,10 @@ describe('checkError', function () {
   it('getMessage', function () {
     var errorInstance = new Error('I am an instance');
     var derivedInstance = new TypeError('I inherit from Error');
-    var thrownMessage = 'Imagine I have been thrown';
     var errorExpMsg = errorInstance.message;
     var derivedExpMsg = derivedInstance.message;
     assert(checkError.getMessage(errorInstance) === errorExpMsg);
     assert(checkError.getMessage(derivedInstance) === derivedExpMsg);
-
-    assert(checkError.getMessage(thrownMessage) === 'Imagine I have been thrown');
 
     assert(checkError.getMessage(Error) === '');
     assert(checkError.getMessage(TypeError) === '');
