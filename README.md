@@ -97,12 +97,68 @@ You can also use it within the browser; install via npm and use the `check-error
 
 The primary export of `check-error` is an object which has the following methods:
 
-* `compatibleMessage(err, errMatcher)` - Checks if an error message is compatible with an `errMatcher` RegExp or String (we check if the message contains the String).
+* `createCriteria([errLike[, errMsgMatcher]])` or `createCriteria([errMsgMatcher])` - Creates a criteria object which can be passed to `describeExpectedError` and `checkError`. `errLike` can be an `Error` constructor or instance. `errMsgMatcher` can be a string or regular expression. If `errLike` is omitted, then it defaults to the built-in `Error` constructor.
+* `describeExpectedError(criteria)` - Returns a string describing what kind of `Error` instance is expected based on criteria (which is an object returned by `createCriteria`).
+* `checkError(errObj, criteria)` - Checks if an `Error` instance matches criteria (which is an object returned by `createCriteria`).
+* `compatibleMessage(err, errMatcher)` - Checks if an error's message is compatible with an `errMatcher` RegExp or String (we check if the message contains the String).
 * `getConstructorName(errorLike)` - Retrieves the name of a constructor, an error's constructor or `errorLike` itself if it's not an error instance or constructor.
 * `getMessage(err)` - Retrieves the message of an error. If `err` or `err.message` is undefined we return an empty String.
 
 ```js
 var checkError = require('check-error');
+```
+
+#### createCriteria, describeExpectedError, and checkError
+
+```js
+var checkError = require('check-error');
+var criteria;
+
+criteria = checkError.createCriteria();
+checkError.describeExpectedError(criteria); // "an Error"
+checkError.checkError(new Error('i like waffles'), criteria); // true
+checkError.checkError(new TypeError('i like waffles'), criteria); // true
+checkError.checkError({ message: 'i like waffles' }, criteria); // false
+
+criteria = checkError.createCriteria('waffles');
+checkError.describeExpectedError(criteria); // "an Error including 'waffles'"
+checkError.checkError(new Error('i like waffles'), criteria); // true
+checkError.checkError(new Error('i like pancakes'), criteria); // false
+checkError.checkError(new TypeError('i like waffles'), criteria); // true
+checkError.checkError({ message: 'i like waffles' }, criteria); // false
+
+criteria = checkError.createCriteria(/waffles/);
+checkError.describeExpectedError(criteria); // "an Error matching /waffles/"
+checkError.checkError(new Error('i like waffles'), criteria); // true
+checkError.checkError(new Error('i like pancakes'), criteria); // false
+checkError.checkError(new TypeError('i like waffles'), criteria); // true
+checkError.checkError({ message: 'i like waffles' }, criteria); // false
+
+criteria = checkError.createCriteria(TypeError);
+checkError.describeExpectedError(criteria); // "a TypeError"
+checkError.checkError(new Error('i like waffles'), criteria); // false
+checkError.checkError(new TypeError('i like waffles'), criteria); // true
+checkError.checkError({ message: 'i like waffles' }, criteria); // false
+
+criteria = checkError.createCriteria(TypeError, 'waffles');
+checkError.describeExpectedError(criteria); // "a TypeError including 'waffles'"
+checkError.checkError(new Error('i like waffles'), criteria); // false
+checkError.checkError(new TypeError('i like waffles'), criteria); // true
+checkError.checkError(new TypeError('i like pancakes'), criteria); // false
+checkError.checkError({ message: 'i like waffles' }, criteria); // false
+
+criteria = checkError.createCriteria(TypeError, /waffles/);
+checkError.describeExpectedError(criteria); // "a TypeError matching /waffles/"
+checkError.checkError(new Error('i like waffles'), criteria); // false
+checkError.checkError(new TypeError('i like waffles'), criteria); // true
+checkError.checkError(new TypeError('i like pancakes'), criteria); // false
+checkError.checkError({ message: 'i like waffles' }, criteria); // false
+
+var errObj = new Error('I like waffles');
+criteria = checkError.createCriteria(errObj);
+checkError.describeExpectedError(criteria); // "[Error: I like waffles]"
+checkError.checkError(new Error('i like waffles'), criteria); // false
+checkError.checkError(errObj, criteria); // true
 ```
 
 #### .compatibleMessage(err, errMatcher)
