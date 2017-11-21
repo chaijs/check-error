@@ -19,6 +19,7 @@
     "check-error.js"
   ],
   "main": "./index.js",
+  "version": "0.0.0-development",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/chaijs/check-error.git"
