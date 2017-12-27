@@ -9,6 +9,11 @@
 var getFunctionName = require('get-func-name');
 
 var VOWELS = [ 'a', 'e', 'i', 'o', 'u' ];
+
+// Objects are identified as "criteria objects" based on having an `.id`
+// property that's strictly equal to this object. Once support for legacy
+// environments is dropped, a `Symbol` property can be used instead.
+var criteriaMarker = {};
 /**
  * ### .checkError
  *
@@ -92,62 +97,16 @@ function getConstructorName(errorLike) {
 }
 
 /**
- * ### .describeExpectedError(criteria)
+ * ### .isCriteria(criteria)
  *
- * Return a string describing what kind of `Error` instance is expected based on
- * `criteria` (which is an object returned by `.createCriteria`).
+ * Validate that `criteria` is a criteria object by checking that it has an
+ * `.id` property that's strictly equal to the `criteriaMarker` object.
  *
- * @param {Object} criteria
- * @returns String
- */
-function describeExpectedError(criteria) {
-  if (criteria.errLikeType === 'error') {
-    // Mimic `util.inspect`.
-    return '[' + criteria.errLike.toString() + ']';
-  }
-
-  var desc = '';
-  var constructor = getConstructorName(criteria.errLike);
-  var first = constructor.charAt(0).toLowerCase();
-  var article = VOWELS.indexOf(first) > -1 ? 'an ' : 'a '; // eslint-disable-line no-magic-numbers
-  desc += article + constructor;
-
-  if (criteria.errMsgMatcherType === 'string') {
-    desc += ' including \'' + criteria.errMsgMatcher + '\'';
-  } else if (criteria.errMsgMatcherType === 'regexp') {
-    desc += ' matching ' + criteria.errMsgMatcher;
-  }
-
-  return desc;
-}
-
-/**
- * ### .checkError(errObj, criteria)
- *
- * Validate that `errObj` is an `Error` instance that matches `criteria` (which
- * is an object returned by `.createCriteria`).
- *
- * @param {Error} errObj
  * @param {Object} criteria
  * @returns Boolean
  */
-function checkError(errObj, criteria) {
-  if (criteria.errLikeType === 'error' && errObj !== criteria.errLike) {
-    return false;
-  }
-
-  if (criteria.errLikeType === 'error-constructor' &&
-      !(errObj instanceof criteria.errLike)) {
-    return false;
-  }
-
-  if ((criteria.errMsgMatcherType === 'string' ||
-      criteria.errMsgMatcherType === 'regexp') &&
-      !compatibleMessage(errObj, criteria.errMsgMatcher)) {
-    return false;
-  }
-
-  return true;
+function isCriteria(criteria) {
+  return typeof criteria === 'object' && criteria.id === criteriaMarker;
 }
 
 function getType(val) {
@@ -172,40 +131,42 @@ function getType(val) {
 
 /**
  * ### .createCriteria([errLike[, errMsgMatcher]])
+ * ### .createCriteria([errMsgMatcher])
  *
- * Return a criteria object which can be passed to `.checkError` and
- * `.describeExpectedError`. Passing this criteria object to `.checkError` along
- * with an `errObj` will validate the following:
- *
- * If `errLike` is an `Error` constructor, then validate that `errObj` is an
- * instance of `errLike`.
- *
- * If `errLike` is an `Error` instance, then validate that `errObj` is strictly
- * (`===`) equal to `errLike`.
- *
- * If `errMsgMatcher` is a string or regex, then validate that `errObj`'s
- * message includes or matches `errMsgMatcher`.
- *
- * This function allows `errLike` to be omitted and `errMsgMatcher` to be
- * passed in as the first argument. In other words, this function signature is
- * also supported: `.createCriteria([errMsgMatcher])`.
+ * Return a criteria object which is used internally by `.checkError` and
+ * `.describeExpectedError`. The purpose of this function is to improve
+ * performance when needing to pass the same criteria to both of those other
+ * functions. It allows you to pass `errLike` and/or `errMsgMatcher` a single
+ * time to this function, and then pass the resulting criteria object to both
+ * of those other functions. Doing this ensures that costly type validation is
+ * only performed once per criteria.
  *
  * If `errLike` is omitted or is explicitly `null` or `undefined`, then it
  * defaults to the built-in `Error` constructor.
+ *
+ * See `.checkError` for more info on `errLike` and `errMsgMatcher`.
  *
  * @param {Error|ErrorConstructor} [errLike=Error]
  * @param {String|RegExp} [errMsgMatcher]
  * @returns Object
  */
 function createCriteria(errLike, errMsgMatcher) {
-  var errLikeType = getType(errLike);
   var errMsgMatcherType = getType(errMsgMatcher);
+  // Handle a criteria object being passed by just returning the same object.
+  if (isCriteria(errLike)) {
+    if (errMsgMatcherType !== 'undefined' && errMsgMatcherType !== 'null') {
+      throw TypeError('errMsgMatcher must be null or undefined when errLike' +
+                      ' is a criteria object');
+    }
+    return errLike;
+  }
+  var errLikeType = getType(errLike);
   // Handle `errLike` being omitted and `errMsgMatcher` being passed as the
   // second argument.
   if (errLikeType === 'string' || errLikeType === 'regexp') {
     if (errMsgMatcherType !== 'undefined' && errMsgMatcherType !== 'null') {
       throw TypeError('errMsgMatcher must be null or undefined when errLike' +
-                       ' is a string or regular expression');
+                      ' is a string or regular expression');
     }
     errMsgMatcher = errLike;
     errMsgMatcherType = errLikeType;
@@ -218,7 +179,8 @@ function createCriteria(errLike, errMsgMatcher) {
   }
 
   if (errLikeType !== 'error' && errLikeType !== 'error-constructor') {
-    throw TypeError('errLike must be an Error constructor or instance');
+    throw TypeError('errLike must be an Error constructor or instance,' +
+                    ' string, regular expression, or criteria object');
   }
 
   if (errMsgMatcherType !== 'undefined' && errMsgMatcherType !== 'null' &&
@@ -233,6 +195,7 @@ function createCriteria(errLike, errMsgMatcher) {
   }
 
   return {
+    id: criteriaMarker,
     errLike: errLike,
     errLikeType: errLikeType,
     errMsgMatcher: errMsgMatcher,
@@ -240,6 +203,91 @@ function createCriteria(errLike, errMsgMatcher) {
   };
 }
 
+/**
+ * ### .describeExpectedError([errLike, [errMsgMatcher]])
+ * ### .describeExpectedError([errMsgMatcher])
+ *
+ * Return a string describing what kind of `Error` instance is expected based
+ * on criteria defined by `errLike` and/or `errMsgMatcher`.
+ *
+ * If `errLike` is omitted or is explicitly `null` or `undefined`, then it
+ * defaults to the built-in `Error` constructor.
+ *
+ * See `.checkError` for more info on `errLike` and `errMsgMatcher`.
+ *
+ * @param {Error|ErrorConstructor} [errLike=Error]
+ * @param {String|RegExp} [errMsgMatcher]
+ * @returns String
+ */
+function describeExpectedError(errLike, errMsgMatcher) {
+  var criteria = createCriteria(errLike, errMsgMatcher);
+  if (criteria.errLikeType === 'error') {
+    // Mimic `util.inspect`.
+    return '[' + criteria.errLike.toString() + ']';
+  }
+
+  var desc = '';
+  var constructor = getConstructorName(criteria.errLike);
+  var first = constructor.charAt(0).toLowerCase();
+  var article = VOWELS.indexOf(first) > -1 ? 'an ' : 'a '; // eslint-disable-line no-magic-numbers
+  desc += article + constructor;
+
+  if (criteria.errMsgMatcherType === 'string') {
+    desc += ' including \'' + criteria.errMsgMatcher + '\'';
+  } else if (criteria.errMsgMatcherType === 'regexp') {
+    desc += ' matching ' + criteria.errMsgMatcher;
+  }
+
+  return desc;
+}
+
+/**
+ * ### .checkError(errObj[, errLike[, errMsgMatcher]])
+ * ### .checkError(errObj[, errMsgMatcher])
+ *
+ * Validate that `errObj` is an `Error` instance that matches criteria defined
+ * by `errLike` and/or `errMsgMatcher`.
+ *
+ * If `errLike` is a criteria object (as is returned by `.createCriteria`), then
+ * validate that `errObj` matches the criteria that was originally passed to
+ * `.createCriteria` in order to create the criteria object.
+ *
+ * If `errLike` is omitted or is explicitly `null` or `undefined`, then it
+ * defaults to the built-in `Error` constructor.
+ *
+ * If `errLike` is an `Error` constructor, then validate that `errObj` is an
+ * instance of `errLike`.
+ *
+ * If `errLike` is an `Error` instance, then validate that `errObj` is strictly
+ * (`===`) equal to `errLike`.
+ *
+ * If `errMsgMatcher` is a string or regex, then validate that `errObj`'s
+ * message includes or matches `errMsgMatcher`.
+ *
+ * @param {Error} errObj
+ * @param {Error|ErrorConstructor} [errLike=Error]
+ * @param {String|RegExp} [errMsgMatcher]
+ * @returns Boolean
+ */
+function checkError(errObj, errLike, errMsgMatcher) {
+  var criteria = createCriteria(errLike, errMsgMatcher);
+  if (criteria.errLikeType === 'error' && errObj !== criteria.errLike) {
+    return false;
+  }
+
+  if (criteria.errLikeType === 'error-constructor' &&
+      !(errObj instanceof criteria.errLike)) {
+    return false;
+  }
+
+  if ((criteria.errMsgMatcherType === 'string' ||
+      criteria.errMsgMatcherType === 'regexp') &&
+      !compatibleMessage(errObj, criteria.errMsgMatcher)) {
+    return false;
+  }
+
+  return true;
+}
 
 module.exports = {
   checkError: checkError,
@@ -248,4 +296,5 @@ module.exports = {
   describeExpectedError: describeExpectedError,
   getMessage: getMessage,
   getConstructorName: getConstructorName,
+  isCriteria: isCriteria,
 };
