@@ -62,17 +62,23 @@ describe('checkError', function () {
       assert(checkError.checkError(subErrObj, ReferenceError) === false);
     });
 
-    it('returns true when passed a matching Error instance', function () {
-      assert(checkError.checkError(errObj, errObj) === true);
+    it('returns true when passed a deeply equal Error instance', function () {
+      assert(checkError.checkError(errObj, new Error('I like waffles')) === true);
     });
-    it('returns false when passed a non-matching Error instance', function () {
-      assert(checkError.checkError(errObj, subErrObj) === false);
+    it('returns false when passed an Error instance with a different message', function () {
+      assert(checkError.checkError(errObj, new Error('I like pancakes')) === false);
+    });
+    it('returns false when passed an Error instance with a different constructor', function () {
+      assert(checkError.checkError(errObj, new TypeError('I like waffles')) === false);
     });
 
-    it('returns true when passed a matching subclassed Error instance', function () {
-      assert(checkError.checkError(subErrObj, subErrObj) === true);
+    it('returns true when passed a deeply equal subclassed Error instance', function () {
+      assert(checkError.checkError(subErrObj, new TypeError('I like waffles')) === true);
     });
-    it('returns false when passed a non-matching subclassed Error instance', function () {
+    it('returns false when passed a subclassed Error instance with a different message', function () {
+      assert(checkError.checkError(subErrObj, new TypeError('I like pancakes')) === false);
+    });
+    it('returns false when passed a subclassed Error instance with a different constructor', function () {
       assert(checkError.checkError(subErrObj, new ReferenceError('I like waffles')) === false);
     });
 

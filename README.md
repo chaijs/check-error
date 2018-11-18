@@ -101,7 +101,7 @@ The primary export of `check-error` is an object which has the following methods
     * If `errLike` is a criteria object (as is returned by `.createCriteria`), then validate that `errObj` matches the criteria that was originally passed to `.createCriteria` in order to create the criteria object.
     * If `errLike` is omitted or is explicitly `null` or `undefined`, then it defaults to the built-in `Error` constructor.
     * If `errLike` is an `Error` constructor, then validate that `errObj` is an instance of `errLike`.
-    * If `errLike` is an `Error` instance, then validate that `errObj` is strictly (`===`) equal to `errLike`.
+    * If `errLike` is an `Error` instance, then validate that `errObj` is [deeply equal](https://github.com/chaijs/deep-eql) to `errLike`.
     * If `errMsgMatcher` is a string or regex, then validate that `errObj`'s message includes or matches `errMsgMatcher`.
 * `describeExpectedError([errLike[, errMsgMatcher]])` or `describeExpectedError[errMsgMatcher])` - Returns a string describing what kind of `Error` instance is expected based on criteria defined by `errLike` and/or `errMsgMatcher`.
 * `createCriteria([errLike[, errMsgMatcher]])` or `createCriteria([errMsgMatcher])` - Returns a criteria object which can be passed to `.describeExpectedError` and `.checkError`. Doing so is more performant than directly passing the same `errLike` and/or `errMsgMatcher` to both of those functions.
@@ -140,8 +140,9 @@ checkError.checkError(errObj, TypeError, /waffles/); // true
 checkError.checkError(errObj, TypeError, /pancakes/); // false
 checkError.checkError(errObj, ReferenceError, /waffles/); // false
 
-checkError.checkError(errObj, errObj); // true
-checkError.checkError(errObj, new TypeError('I like waffles')); // false
+checkError.checkError(errObj, new TypeError('I like waffles')); // true
+checkError.checkError(errObj, new TypeError('I like pancakes')); // false
+checkError.checkError(errObj, new ReferenceError('I like waffles')); // false
 ```
 
 #### .describeExpectedError([errLike[, errMsgMatcher]]) or .describeExpectedError([errMsgMatcher])

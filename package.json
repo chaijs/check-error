@@ -55,6 +55,7 @@
     }
   },
   "dependencies": {
+    "deep-eql": "^4.0.0",
     "get-func-name": "^1.0.0"
   },
   "devDependencies": {

@@ -6,6 +6,7 @@
  * MIT Licensed
  */
 
+var eql = require('deep-eql');
 var getFunctionName = require('get-func-name');
 
 var VOWELS = [ 'a', 'e', 'i', 'o', 'u' ];
@@ -271,7 +272,7 @@ function describeExpectedError(errLike, errMsgMatcher) {
  */
 function checkError(errObj, errLike, errMsgMatcher) {
   var criteria = createCriteria(errLike, errMsgMatcher);
-  if (criteria.errLikeType === 'error' && errObj !== criteria.errLike) {
+  if (criteria.errLikeType === 'error' && !eql(errObj, criteria.errLike)) {
     return false;
   }
 
