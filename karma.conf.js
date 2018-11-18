@@ -4,7 +4,7 @@ var packageJson = require('./package.json');
 var defaultTimeout = 120000;
 var browserifyIstanbul = require('browserify-istanbul');
 module.exports = function configureKarma(config) {
-  var localBrowsers = [ 'PhantomJS' ];
+  var localBrowsers = [ 'ChromeHeadlessNoSandbox' ];
   var sauceLabsBrowsers = {
     SauceChromeLatest: {
       base: 'SauceLabs',
@@ -40,6 +40,12 @@ module.exports = function configureKarma(config) {
   config.set({
     basePath: '',
     browsers: localBrowsers,
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: [ '--no-sandbox' ],
+      },
+    },
     logLevel: process.env.npm_config_debug ? config.LOG_DEBUG : config.LOG_INFO,
     frameworks: [ 'browserify', 'mocha' ],
     files: [ 'test/*.js' ],
