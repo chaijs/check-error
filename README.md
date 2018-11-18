@@ -97,53 +97,76 @@ You can also use it within the browser; install via npm and use the `check-error
 
 The primary export of `check-error` is an object which has the following methods:
 
-* `compatibleInstance(err, errorLike)` - Checks if an error is compatible with another `errorLike` object. If `errorLike` is an error instance we do a strict comparison, otherwise we return `false` by default, because instances of objects can only be compatible if they're both error instances.
-* `compatibleConstructor(err, errorLike)` - Checks if an error's constructor is compatible with another `errorLike` object. If `err` has the same constructor as `errorLike` or if `err` is an instance of `errorLike`.
-* `compatibleMessage(err, errMatcher)` - Checks if an error message is compatible with an `errMatcher` RegExp or String (we check if the message contains the String).
+* `checkError(errObj[, errLike[, errMsgMatcher]])` or `checkError(errObj[, errMsgMatcher])` - Checks if an `Error` instance matches criteria defined by `errLike` and/or `errMsgMatcher`.
+    * If `errLike` is a criteria object (as is returned by `.createCriteria`), then validate that `errObj` matches the criteria that was originally passed to `.createCriteria` in order to create the criteria object.
+    * If `errLike` is omitted or is explicitly `null` or `undefined`, then it defaults to the built-in `Error` constructor.
+    * If `errLike` is an `Error` constructor, then validate that `errObj` is an instance of `errLike`.
+    * If `errLike` is an `Error` instance, then validate that `errObj` is [deeply equal](https://github.com/chaijs/deep-eql) to `errLike`.
+    * If `errMsgMatcher` is a string or regex, then validate that `errObj`'s message includes or matches `errMsgMatcher`.
+* `describeExpectedError([errLike[, errMsgMatcher]])` or `describeExpectedError[errMsgMatcher])` - Returns a string describing what kind of `Error` instance is expected based on criteria defined by `errLike` and/or `errMsgMatcher`.
+* `createCriteria([errLike[, errMsgMatcher]])` or `createCriteria([errMsgMatcher])` - Returns a criteria object which can be passed to `.describeExpectedError` and `.checkError`. Doing so is more performant than directly passing the same `errLike` and/or `errMsgMatcher` to both of those functions.
+* `compatibleMessage(err, errMatcher)` - Checks if an error's message is compatible with an `errMatcher` RegExp or String (we check if the message contains the String).
 * `getConstructorName(errorLike)` - Retrieves the name of a constructor, an error's constructor or `errorLike` itself if it's not an error instance or constructor.
-* `getMessage(err)` - Retrieves the message of an error or `err` itself if it's a String. If `err` or `err.message` is undefined we return an empty String.
+* `getMessage(err)` - Retrieves the message of an error. If `err` or `err.message` is undefined we return an empty String.
 
 ```js
 var checkError = require('check-error');
 ```
 
-#### .compatibleInstance(err, errorLike)
+#### .checkError(errObj[, errLike[, errMsgMatcher]]) or .checkError(errObj[, errMsgMatcher])
 
 ```js
 var checkError = require('check-error');
 
-var funcThatThrows = function() { throw new TypeError('I am a TypeError') };
-var caughtErr;
+var errObj = new TypeError('I like waffles');
 
-try {
-  funcThatThrows();
-} catch(e) {
-  caughtErr = e;
-}
+checkError.checkError(errObj); // true
+checkError.checkError({ message: 'I like waffles' }); // false
 
-var sameInstance = caughtErr;
+checkError.checkError(errObj, 'waffles'); // true
+checkError.checkError(errObj, 'pancakes'); // false
 
-checkError.compatibleInstance(caughtErr, sameInstance); // true
-checkError.compatibleInstance(caughtErr, new TypeError('Another error')); // false
+checkError.checkError(errObj, /waffles/); // true
+checkError.checkError(errObj, /pancakes/); // false
+
+checkError.checkError(errObj, TypeError); // true
+checkError.checkError(errObj, ReferenceError); // false
+
+checkError.checkError(errObj, TypeError, 'waffles'); // true
+checkError.checkError(errObj, TypeError, 'pancakes'); // false
+checkError.checkError(errObj, ReferenceError, 'waffles'); // false
+
+checkError.checkError(errObj, TypeError, /waffles/); // true
+checkError.checkError(errObj, TypeError, /pancakes/); // false
+checkError.checkError(errObj, ReferenceError, /waffles/); // false
+
+checkError.checkError(errObj, new TypeError('I like waffles')); // true
+checkError.checkError(errObj, new TypeError('I like pancakes')); // false
+checkError.checkError(errObj, new ReferenceError('I like waffles')); // false
 ```
 
-#### .compatibleConstructor(err, errorLike)
+#### .describeExpectedError([errLike[, errMsgMatcher]]) or .describeExpectedError([errMsgMatcher])
 
 ```js
 var checkError = require('check-error');
 
-var funcThatThrows = function() { throw new TypeError('I am a TypeError') };
-var caughtErr;
+checkError.describeExpectedError(); // "an Error"
+checkError.describeExpectedError('waffles'); // "an Error including 'waffles'"
+checkError.describeExpectedError(/waffles/); // "an Error matching /waffles/"
+checkError.describeExpectedError(TypeError); // "a TypeError"
+checkError.describeExpectedError(TypeError, 'waffles'); // "a TypeError including 'waffles'"
+checkError.describeExpectedError(TypeError, /waffles/); // "a TypeError matching /waffles/"
+checkError.describeExpectedError(new Error('I like waffles')); // "[Error: I like waffles]"
+```
 
-try {
-  funcThatThrows();
-} catch(e) {
-  caughtErr = e;
-}
+#### .createCriteria([errLike[, errMsgMatcher]]) or .createCriteria([errMsgMatcher])
 
-checkError.compatibleConstructor(caughtErr, Error); // true
-checkError.compatibleConstructor(caughtErr, TypeError); // true
-checkError.compatibleConstructor(caughtErr, RangeError); // false
+```js
+var checkError = require('check-error');
+
+var criteria = checkError.createCriteria(TypeError, 'waffles');
+checkError.describeExpectedError(criteria); // "a TypeError including 'waffles'"
+checkError.checkError(new TypeError('I like waffles'), criteria); // true
 ```
 
 #### .compatibleMessage(err, errMatcher)
