@@ -1,4 +1,5 @@
 'use strict';
+
 var assert = require('simple-assert');
 var checkError = require('..');
 function assertError(testFn, errMsg) {
