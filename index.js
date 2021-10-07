@@ -1,19 +1,4 @@
-'use strict';
-
-/* !
- * Chai - checkError utility
- * Copyright(c) 2012-2016 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-var getFunctionName = require('get-func-name');
-/**
- * ### .checkError
- *
- * Checks that an error conforms to a given set of criteria and/or retrieves information about it.
- *
- * @api public
- */
+import getFunctionName from 'get-func-name';
 
 /**
  * ### .compatibleInstance(thrown, errorLike)
@@ -76,7 +61,7 @@ function compatibleConstructor(thrown, errorLike) {
  */
 
 function compatibleMessage(thrown, errMatcher) {
-  var comparisonString = typeof thrown === 'string' ? thrown : thrown.message;
+  const comparisonString = typeof thrown === 'string' ? thrown : thrown.message;
   if (errMatcher instanceof RegExp) {
     return errMatcher.test(comparisonString);
   } else if (typeof errMatcher === 'string') {
@@ -98,7 +83,7 @@ function compatibleMessage(thrown, errMatcher) {
  */
 
 function getConstructorName(errorLike) {
-  var constructorName = errorLike;
+  let constructorName = errorLike;
   if (errorLike instanceof Error) {
     constructorName = getFunctionName(errorLike.constructor);
   } else if (typeof errorLike === 'function') {
@@ -107,7 +92,7 @@ function getConstructorName(errorLike) {
     // of the error just in case it's a poorly-constructed error. Please see chaijs/chai/issues/45 to know more.
     constructorName = getFunctionName(errorLike);
     if (constructorName === '') {
-      var newConstructorName = getFunctionName(new errorLike()); // eslint-disable-line new-cap
+      const newConstructorName = getFunctionName(new errorLike()); // eslint-disable-line new-cap
       constructorName = newConstructorName || constructorName;
     }
   }
@@ -129,7 +114,7 @@ function getConstructorName(errorLike) {
  */
 
 function getMessage(errorLike) {
-  var msg = '';
+  let msg = '';
   if (errorLike && errorLike.message) {
     msg = errorLike.message;
   } else if (typeof errorLike === 'string') {
@@ -139,10 +124,4 @@ function getMessage(errorLike) {
   return msg;
 }
 
-module.exports = {
-  compatibleInstance: compatibleInstance,
-  compatibleConstructor: compatibleConstructor,
-  compatibleMessage: compatibleMessage,
-  getMessage: getMessage,
-  getConstructorName: getConstructorName,
-};
+export { compatibleInstance, compatibleConstructor, compatibleMessage, getMessage, getConstructorName };
