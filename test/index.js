@@ -1,12 +1,12 @@
-'use strict';
-var assert = require('simple-assert');
-var checkError = require('..');
+import assert from 'simple-assert';
+import * as checkError from '../index.js';
+
 describe('checkError', function () {
   it('compatibleInstance', function () {
-    var errorInstance = new Error('I am an instance');
-    var sameInstance = errorInstance;
-    var otherInstance = new Error('I an another instance');
-    var aNumber = 1337;
+    const errorInstance = new Error('I am an instance');
+    const sameInstance = errorInstance;
+    const otherInstance = new Error('I an another instance');
+    const aNumber = 1337;
     assert(checkError.compatibleInstance(errorInstance, sameInstance) === true);
     assert(checkError.compatibleInstance(errorInstance, otherInstance) === false);
     assert(checkError.compatibleInstance(errorInstance, Error) === false);
@@ -14,12 +14,12 @@ describe('checkError', function () {
   });
 
   it('compatibleConstructor', function () {
-    var errorInstance = new Error('I am an instance');
-    var sameInstance = errorInstance;
-    var otherInstance = new Error('I an another instance');
-    var derivedInstance = new TypeError('I inherit from Error');
-    var anObject = {};
-    var aNumber = 1337;
+    const errorInstance = new Error('I am an instance');
+    const sameInstance = errorInstance;
+    const otherInstance = new Error('I an another instance');
+    const derivedInstance = new TypeError('I inherit from Error');
+    const anObject = {};
+    const aNumber = 1337;
     assert(checkError.compatibleConstructor(errorInstance, sameInstance) === true);
     assert(checkError.compatibleConstructor(errorInstance, otherInstance) === true);
     assert(checkError.compatibleConstructor(derivedInstance, errorInstance) === true);
@@ -34,9 +34,9 @@ describe('checkError', function () {
   });
 
   it('compatibleMessage', function () {
-    var errorInstance = new Error('I am an instance');
-    var derivedInstance = new TypeError('I inherit from Error');
-    var thrownMessage = 'Imagine I have been thrown';
+    const errorInstance = new Error('I am an instance');
+    const derivedInstance = new TypeError('I inherit from Error');
+    const thrownMessage = 'Imagine I have been thrown';
     assert(checkError.compatibleMessage(errorInstance, /instance$/) === true);
     assert(checkError.compatibleMessage(derivedInstance, /Error$/) === true);
     assert(checkError.compatibleMessage(errorInstance, /unicorn$/) === false);
@@ -62,9 +62,9 @@ describe('checkError', function () {
   });
 
   it('constructorName', function () {
-    var errorInstance = new Error('I am an instance');
-    var derivedInstance = new TypeError('I inherit from Error');
-    var thrownMessage = 'Imagine I have been thrown';
+    const errorInstance = new Error('I am an instance');
+    const derivedInstance = new TypeError('I inherit from Error');
+    const thrownMessage = 'Imagine I have been thrown';
     assert(checkError.getConstructorName(errorInstance) === 'Error');
     assert(checkError.getConstructorName(derivedInstance) === 'TypeError');
 
@@ -85,7 +85,7 @@ describe('checkError', function () {
       return 1;
     }
 
-    var anonymousFunc = (function () {
+    const anonymousFunc = (function () {
       return function () { // eslint-disable-line func-style
         return 2;
       };
@@ -94,7 +94,7 @@ describe('checkError', function () {
     // See chaijs/chai/issues/45: some poorly-constructed custom errors don't have useful names
     // on either their constructor or their constructor prototype, but instead
     // only set the name inside the constructor itself.
-    var PoorlyConstructedError = function () { // eslint-disable-line func-style
+    const PoorlyConstructedError = function () { // eslint-disable-line func-style
       this.name = 'PoorlyConstructedError'; // eslint-disable-line no-invalid-this
     };
     PoorlyConstructedError.prototype = Object.create(Error.prototype);
@@ -106,11 +106,11 @@ describe('checkError', function () {
   });
 
   it('getMessage', function () {
-    var errorInstance = new Error('I am an instance');
-    var derivedInstance = new TypeError('I inherit from Error');
-    var thrownMessage = 'Imagine I have been thrown';
-    var errorExpMsg = errorInstance.message;
-    var derivedExpMsg = derivedInstance.message;
+    const errorInstance = new Error('I am an instance');
+    const derivedInstance = new TypeError('I inherit from Error');
+    const thrownMessage = 'Imagine I have been thrown';
+    const errorExpMsg = errorInstance.message;
+    const derivedExpMsg = derivedInstance.message;
     assert(checkError.getMessage(errorInstance) === errorExpMsg);
     assert(checkError.getMessage(derivedInstance) === derivedExpMsg);
 
