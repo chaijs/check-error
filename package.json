@@ -57,9 +57,7 @@
       "prefer-arrow-callback": "off"
     }
   },
-  "dependencies": {
-    "get-func-name": "^2.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
