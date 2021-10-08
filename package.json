@@ -75,7 +75,7 @@
     "lcov-result-merger": "^1.0.2",
     "mocha": "^2.4.5",
     "phantomjs-prebuilt": "^2.1.5",
-    "semantic-release": "^4.3.5",
+    "semantic-release": "^17.2.3",
     "simple-assert": "^1.0.0",
     "validate-commit-msg": "^2.3.1"
   },
