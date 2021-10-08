@@ -21,12 +21,9 @@
       src="https://img.shields.io/github/tag/chaijs/check-error.svg?style=flat-square"
     />
   </a>
-  <a href="https://travis-ci.org/chaijs/check-error">
-    <img
-      alt="build:?"
-      src="https://img.shields.io/travis/chaijs/check-error/master.svg?style=flat-square"
-    />
-  </a>
+
+  ![example workflow](https://github.com/chaijs/check-error/actions/workflows/nodejs.yml/badge.svg)
+
   <a href="https://coveralls.io/r/chaijs/check-error">
     <img
       alt="coverage:?"
