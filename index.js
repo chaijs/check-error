@@ -1,5 +1,3 @@
-import getFunctionName from 'get-func-name';
-
 /**
  * ### .compatibleInstance(thrown, errorLike)
  *
@@ -85,14 +83,14 @@ function compatibleMessage(thrown, errMatcher) {
 function getConstructorName(errorLike) {
   let constructorName = errorLike;
   if (errorLike instanceof Error) {
-    constructorName = getFunctionName(errorLike.constructor);
+    constructorName = errorLike.constructor.name;
   } else if (typeof errorLike === 'function') {
     // If `err` is not an instance of Error it is an error constructor itself or another function.
     // If we've got a common function we get its name, otherwise we may need to create a new instance
     // of the error just in case it's a poorly-constructed error. Please see chaijs/chai/issues/45 to know more.
-    constructorName = getFunctionName(errorLike);
+    constructorName = errorLike.name;
     if (constructorName === '') {
-      const newConstructorName = getFunctionName(new errorLike()); // eslint-disable-line new-cap
+      const newConstructorName = (new errorLike().name); // eslint-disable-line new-cap
       constructorName = newConstructorName || constructorName;
     }
   }
