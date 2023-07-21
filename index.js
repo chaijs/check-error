@@ -12,7 +12,7 @@
  * @api public
  */
 
-function compatibleInstance(thrown, errorLike) {
+export function compatibleInstance(thrown, errorLike) {
   return errorLike instanceof Error && thrown === errorLike;
 }
 
@@ -32,7 +32,7 @@ function compatibleInstance(thrown, errorLike) {
  * @api public
  */
 
-function compatibleConstructor(thrown, errorLike) {
+export function compatibleConstructor(thrown, errorLike) {
   if (errorLike instanceof Error) {
     // If `errorLike` is an instance of any error we compare their constructors
     return thrown.constructor === errorLike.constructor || thrown instanceof errorLike.constructor;
@@ -58,7 +58,7 @@ function compatibleConstructor(thrown, errorLike) {
  * @api public
  */
 
-function compatibleMessage(thrown, errMatcher) {
+export function compatibleMessage(thrown, errMatcher) {
   const comparisonString = typeof thrown === 'string' ? thrown : thrown.message;
   if (errMatcher instanceof RegExp) {
     return errMatcher.test(comparisonString);
@@ -80,7 +80,7 @@ function compatibleMessage(thrown, errMatcher) {
  * @api public
  */
 
-function getConstructorName(errorLike) {
+export function getConstructorName(errorLike) {
   let constructorName = errorLike;
   if (errorLike instanceof Error) {
     constructorName = errorLike.constructor.name;
@@ -111,7 +111,7 @@ function getConstructorName(errorLike) {
  * @api public
  */
 
-function getMessage(errorLike) {
+export function getMessage(errorLike) {
   let msg = '';
   if (errorLike && errorLike.message) {
     msg = errorLike.message;
@@ -121,5 +121,3 @@ function getMessage(errorLike) {
 
   return msg;
 }
-
-export { compatibleInstance, compatibleConstructor, compatibleMessage, getMessage, getConstructorName };
