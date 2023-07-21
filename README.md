@@ -101,16 +101,16 @@ The primary export of `check-error` is an object which has the following methods
 * `getMessage(err)` - Retrieves the message of an error or `err` itself if it's a String. If `err` or `err.message` is undefined we return an empty String.
 
 ```js
-var checkError = require('check-error');
+const checkError = require('check-error');
 ```
 
 #### .compatibleInstance(err, errorLike)
 
 ```js
-var checkError = require('check-error');
+const checkError = require('check-error');
 
-var funcThatThrows = function() { throw new TypeError('I am a TypeError') };
-var caughtErr;
+const funcThatThrows = function() { throw new TypeError('I am a TypeError') };
+let caughtErr;
 
 try {
   funcThatThrows();
@@ -118,7 +118,7 @@ try {
   caughtErr = e;
 }
 
-var sameInstance = caughtErr;
+let sameInstance = caughtErr;
 
 checkError.compatibleInstance(caughtErr, sameInstance); // true
 checkError.compatibleInstance(caughtErr, new TypeError('Another error')); // false
@@ -127,10 +127,10 @@ checkError.compatibleInstance(caughtErr, new TypeError('Another error')); // fal
 #### .compatibleConstructor(err, errorLike)
 
 ```js
-var checkError = require('check-error');
+const checkError = require('check-error');
 
-var funcThatThrows = function() { throw new TypeError('I am a TypeError') };
-var caughtErr;
+const funcThatThrows = function() { throw new TypeError('I am a TypeError') };
+let caughtErr;
 
 try {
   funcThatThrows();
@@ -146,10 +146,10 @@ checkError.compatibleConstructor(caughtErr, RangeError); // false
 #### .compatibleMessage(err, errMatcher)
 
 ```js
-var checkError = require('check-error');
+const checkError = require('check-error');
 
-var funcThatThrows = function() { throw new TypeError('I am a TypeError') };
-var caughtErr;
+const funcThatThrows = function() { throw new TypeError('I am a TypeError') };
+let caughtErr;
 
 try {
   funcThatThrows();
@@ -157,7 +157,7 @@ try {
   caughtErr = e;
 }
 
-var sameInstance = caughtErr;
+let sameInstance = caughtErr;
 
 checkError.compatibleMessage(caughtErr, /TypeError$/); // true
 checkError.compatibleMessage(caughtErr, 'I am a'); // true
@@ -168,10 +168,10 @@ checkError.compatibleMessage(caughtErr, 'I do not exist'); // false
 #### .getConstructorName(errorLike)
 
 ```js
-var checkError = require('check-error');
+const checkError = require('check-error');
 
-var funcThatThrows = function() { throw new TypeError('I am a TypeError') };
-var caughtErr;
+const funcThatThrows = function() { throw new TypeError('I am a TypeError') };
+let caughtErr;
 
 try {
   funcThatThrows();
@@ -179,7 +179,7 @@ try {
   caughtErr = e;
 }
 
-var sameInstance = caughtErr;
+let sameInstance = caughtErr;
 
 checkError.getConstructorName(caughtErr) // 'TypeError'
 ```
@@ -187,10 +187,10 @@ checkError.getConstructorName(caughtErr) // 'TypeError'
 #### .getMessage(err)
 
 ```js
-var checkError = require('check-error');
+const checkError = require('check-error');
 
-var funcThatThrows = function() { throw new TypeError('I am a TypeError') };
-var caughtErr;
+const funcThatThrows = function() { throw new TypeError('I am a TypeError') };
+let caughtErr;
 
 try {
   funcThatThrows();
@@ -198,7 +198,7 @@ try {
   caughtErr = e;
 }
 
-var sameInstance = caughtErr;
+let sameInstance = caughtErr;
 
 checkError.getMessage(caughtErr) // 'I am a TypeError'
 ```
