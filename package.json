@@ -55,7 +55,7 @@
     }
   },
   "dependencies": {
-    "get-func-name": "^1.0.0"
+    "get-func-name": "^2.0.2"
   },
   "devDependencies": {
     "browserify": "^13.0.0",
