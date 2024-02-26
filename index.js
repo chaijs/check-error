@@ -1,3 +1,13 @@
+function isErrorInstance(obj) {
+  // eslint-disable-next-line prefer-reflect
+  return Object.prototype.toString.call(obj) === '[object Error]';
+}
+
+function isRegExp(obj) {
+  // eslint-disable-next-line prefer-reflect
+  return Object.prototype.toString.call(obj) === '[object RegExp]';
+}
+
 /**
  * ### .compatibleInstance(thrown, errorLike)
  *
@@ -13,7 +23,7 @@
  */
 
 function compatibleInstance(thrown, errorLike) {
-  return errorLike instanceof Error && thrown === errorLike;
+  return isErrorInstance(errorLike) && thrown === errorLike;
 }
 
 /**
@@ -33,10 +43,10 @@ function compatibleInstance(thrown, errorLike) {
  */
 
 function compatibleConstructor(thrown, errorLike) {
-  if (errorLike instanceof Error) {
+  if (isErrorInstance(errorLike)) {
     // If `errorLike` is an instance of any error we compare their constructors
     return thrown.constructor === errorLike.constructor || thrown instanceof errorLike.constructor;
-  } else if (errorLike.prototype instanceof Error || errorLike === Error) {
+  } else if (isErrorInstance(errorLike.prototype) || errorLike === Error) {
     // If `errorLike` is a constructor that inherits from Error, we compare `thrown` to `errorLike` directly
     return thrown.constructor === errorLike || thrown instanceof errorLike;
   }
@@ -60,7 +70,7 @@ function compatibleConstructor(thrown, errorLike) {
 
 function compatibleMessage(thrown, errMatcher) {
   const comparisonString = typeof thrown === 'string' ? thrown : thrown.message;
-  if (errMatcher instanceof RegExp) {
+  if (isRegExp(errMatcher)) {
     return errMatcher.test(comparisonString);
   } else if (typeof errMatcher === 'string') {
     return comparisonString.indexOf(errMatcher) !== -1; // eslint-disable-line no-magic-numbers
@@ -82,7 +92,7 @@ function compatibleMessage(thrown, errMatcher) {
 
 function getConstructorName(errorLike) {
   let constructorName = errorLike;
-  if (errorLike instanceof Error) {
+  if (isErrorInstance(errorLike)) {
     constructorName = errorLike.constructor.name;
   } else if (typeof errorLike === 'function') {
     // If `err` is not an instance of Error it is an error constructor itself or another function.
