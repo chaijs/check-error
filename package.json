@@ -32,7 +32,7 @@
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "pretest": "npm run lint && npm run build",
     "test": "npm run test:node && npm run test:browser",
-    "test:browser": "web-test-runner --node-resolve test/",
+    "test:browser": "web-test-runner test/",
     "test:node": "mocha"
   },
   "config": {
