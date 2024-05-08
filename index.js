@@ -3,10 +3,6 @@ function isErrorInstance(obj) {
   return obj instanceof Error || Object.prototype.toString.call(obj) === '[object Error]';
 }
 
-function isErrorClass(obj) {
-  return obj === Error || (typeof obj === 'function' && obj.name === 'Error');
-}
-
 function isRegExp(obj) {
   // eslint-disable-next-line prefer-reflect
   return Object.prototype.toString.call(obj) === '[object RegExp]';
@@ -50,7 +46,7 @@ function compatibleConstructor(thrown, errorLike) {
   if (isErrorInstance(errorLike)) {
     // If `errorLike` is an instance of any error we compare their constructors
     return thrown.constructor === errorLike.constructor || thrown instanceof errorLike.constructor;
-  } else if (isErrorClass(Object.getPrototypeOf(errorLike)) || isErrorClass(errorLike)) {
+  } else if ((typeof errorLike === 'object' || typeof errorLike === 'function') && errorLike.prototype) {
     // If `errorLike` is a constructor that inherits from Error, we compare `thrown` to `errorLike` directly
     return thrown.constructor === errorLike || thrown instanceof errorLike;
   }

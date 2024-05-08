@@ -31,6 +31,17 @@ describe('checkError', function () {
 
     assert(checkError.compatibleConstructor(errorInstance, anObject) === false);
     assert(checkError.compatibleConstructor(errorInstance, aNumber) === false);
+
+    function PrototypeError() {}
+    PrototypeError.prototype = Object.create(Error.prototype);
+    assert(checkError.compatibleConstructor(new PrototypeError(), PrototypeError) === true);
+    assert(checkError.compatibleConstructor(new PrototypeError(), Error) === true);
+
+    // eslint-disable-next-line func-style
+    const WeirdNamelessError = function () {};
+    WeirdNamelessError.prototype = Object.create(Error.prototype);
+    assert(checkError.compatibleConstructor(new WeirdNamelessError(), WeirdNamelessError) === true);
+    assert(checkError.compatibleConstructor(new WeirdNamelessError(), Error) === true);
   });
 
   it('compatibleMessage', function () {
