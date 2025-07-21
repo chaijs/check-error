@@ -62,7 +62,7 @@
     "eslint-plugin-filenames": "^0.2.0",
     "ghooks": "^1.0.1",
     "mocha": "^9.1.2",
-    "semantic-release": "^4.3.5",
+    "semantic-release": "^24.2.7",
     "simple-assert": "^2.0.0",
     "validate-commit-msg": "^2.3.1"
   },
