@@ -27,16 +27,10 @@
   },
   "scripts": {
     "lint": "eslint --ignore-path .gitignore index.js test/",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "pretest": "npm run lint",
     "test": "npm run test:node && npm run test:browser",
     "test:browser": "web-test-runner",
     "test:node": "mocha"
-  },
-  "config": {
-    "ghooks": {
-      "commit-msg": "validate-commit-msg"
-    }
   },
   "eslintConfig": {
     "extends": [
@@ -60,9 +54,7 @@
     "eslint": "^2.4.0",
     "eslint-config-strict": "^8.5.0",
     "eslint-plugin-filenames": "^0.2.0",
-    "ghooks": "^1.0.1",
     "mocha": "^9.1.2",
-    "semantic-release": "^4.3.5",
     "simple-assert": "^2.0.0",
     "validate-commit-msg": "^2.3.1"
   },
