@@ -37,7 +37,6 @@ describe('checkError', function () {
     assert(checkError.compatibleConstructor(new PrototypeError(), PrototypeError) === true);
     assert(checkError.compatibleConstructor(new PrototypeError(), Error) === true);
 
-    // eslint-disable-next-line func-style
     const WeirdNamelessError = function () {};
     WeirdNamelessError.prototype = Object.create(Error.prototype);
     assert(checkError.compatibleConstructor(new WeirdNamelessError(), WeirdNamelessError) === true);
@@ -88,7 +87,7 @@ describe('checkError', function () {
     assert(checkError.getConstructorName(undefined) === undefined);
 
     // Asserting that `getFunctionName` behaves correctly
-    function /*one*/correctName/*two*/() { // eslint-disable-line no-inline-comments, spaced-comment
+    function /*one*/correctName/*two*/() {
       return 0;
     }
 
@@ -97,7 +96,7 @@ describe('checkError', function () {
     }
 
     const anonymousFunc = (function () {
-      return function () { // eslint-disable-line func-style
+      return function () {
         return 2;
       };
     }());
@@ -105,8 +104,8 @@ describe('checkError', function () {
     // See chaijs/chai/issues/45: some poorly-constructed custom errors don't have useful names
     // on either their constructor or their constructor prototype, but instead
     // only set the name inside the constructor itself.
-    const PoorlyConstructedError = function () { // eslint-disable-line func-style
-      this.name = 'PoorlyConstructedError'; // eslint-disable-line no-invalid-this
+    const PoorlyConstructedError = function () {
+      this.name = 'PoorlyConstructedError';
     };
     PoorlyConstructedError.prototype = Object.create(Error.prototype);
 
