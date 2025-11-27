@@ -68,6 +68,9 @@ function compatibleConstructor(thrown, errorLike) {
 
 function compatibleMessage(thrown, errMatcher) {
   const comparisonString = typeof thrown === 'string' ? thrown : thrown.message;
+  if (comparisonString === undefined) {
+    return false;
+  }
   if (isRegExp(errMatcher)) {
     return errMatcher.test(comparisonString);
   } else if (typeof errMatcher === 'string') {

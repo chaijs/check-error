@@ -69,6 +69,9 @@ describe('checkError', function () {
 
     assert(checkError.compatibleMessage(thrownMessage, undefined) === false);
     assert(checkError.compatibleMessage(thrownMessage, null) === false);
+
+    const unknownObject = { foo: 'bar' };
+    assert(checkError.compatibleMessage(unknownObject, 'anything') === false);
   });
 
   it('constructorName', function () {
